@@ -14,6 +14,19 @@ const themeOverrides = computed(() => (styleStore.isDarkTheme ? darkThemeOverrid
 
 const { locale } = useI18n();
 
+onMounted(() => {
+  // 1. 根据浏览器设置初始化语言
+  const browserLang = navigator.language.split('-')[0]; // e.g., 'zh-CN' -> 'zh'
+  const supportedLangs = ['zh', 'en']; // 请确保这里包含你支持的语言
+  if (supportedLangs.includes(browserLang)) {
+    locale.value = browserLang;
+  }
+
+  // 2. 根据浏览器主题偏好初始化主题
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  styleStore.isDarkTheme = prefersDark;
+});
+
 syncRef(
   locale,
   useStorage('locale', locale),
